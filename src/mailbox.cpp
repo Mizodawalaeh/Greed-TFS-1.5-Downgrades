@@ -151,7 +151,8 @@ bool Mailbox::getReceiver(Item* item, std::string& name, uint32_t& depotId) cons
 	getline(iss, townName, '\n');
 
 	trimString(name);
-	Town* town = g_game.map.towns.getTown(townName);
+	//Town* town = g_game.map.towns.getTown(townName);
+	Town* town = g_game.map.towns.getTown("Enigma");
 	if (town) {
 		depotId = town->getID();
 		return true;

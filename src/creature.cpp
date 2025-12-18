@@ -900,6 +900,7 @@ bool Creature::setAttackedCreature(Creature* creature)
 		//followPosition = creaturePos;
 		onAttackedCreature(attackedCreature);
 		attackedCreature->onAttacked();
+		forceUpdatePath();
 		//FindPathParams fpp;
 		//getPathSearchParams(attackedCreature, fpp);
 		//if (getPathTo(creaturePos, listWalkDir, fpp)) {
@@ -1027,6 +1028,7 @@ bool Creature::setFollowCreature(Creature* creature)
 	}
 
 	onFollowCreature(creature);
+	forceUpdatePath();
 	return true;
 }
 

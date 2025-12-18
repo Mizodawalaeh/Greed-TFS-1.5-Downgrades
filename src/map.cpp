@@ -523,11 +523,9 @@ bool Map::isTileClear(uint16_t x, uint16_t y, uint8_t z, bool blockFloor /*= fal
 	}
 
 	if (isPathfinding) {
-		const Creature* creature = tile->getTopCreature();
-		if (creature && tile->getTopVisibleCreature(creature) || tile->hasProperty(CONST_PROP_BLOCKPATH) ||
-			tile->hasProperty(CONST_PROP_BLOCKSOLID)) {
-			return false;
-		}
+		return !tile->hasProperty(CONST_PROP_BLOCKPROJECTILE) && !tile->hasProperty(CONST_PROP_BLOCKPATH) &&
+		!tile->hasProperty(CONST_PROP_BLOCKSOLID) && !tile->hasProperty(CONST_PROP_IMMOVABLEBLOCKPATH) &&
+		!tile->hasProperty(CONST_PROP_IMMOVABLEBLOCKSOLID) && !tile->getTopCreature();
 	}
 
 	return !tile->hasProperty(CONST_PROP_BLOCKPROJECTILE);

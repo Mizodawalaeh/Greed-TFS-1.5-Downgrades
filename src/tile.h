@@ -238,6 +238,10 @@ class Tile : public Cylinder
 		//cylinder implementations
 		ReturnValue queryAdd(int32_t index, const Thing& thing, uint32_t count,
 				uint32_t flags, Creature* actor = nullptr) const override;
+		ReturnValue queryAdd(const Creature& creature, uint32_t flags) const;
+		ReturnValue queryAdd(const Item& item, uint32_t flags) const;
+		ReturnValue queryAdd(const Player& player, uint32_t flags) const;
+		ReturnValue queryAdd(const Monster& monster, uint32_t flags) const;
 		ReturnValue queryMaxCount(int32_t index, const Thing& thing, uint32_t count,
 				uint32_t& maxQueryCount, uint32_t flags) const override final;
 		ReturnValue queryRemove(const Thing& thing, uint32_t count, uint32_t flags, Creature* actor = nullptr) const override;

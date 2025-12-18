@@ -25,6 +25,7 @@
 #include "weapons.h"
 #include "configmanager.h"
 #include "events.h"
+#include "monster.h"
 
 extern Game g_game;
 extern Weapons* g_weapons;
@@ -839,6 +840,16 @@ void Combat::doTargetCombat(Creature* caster, Creature* target, CombatDamage& da
 	}
 
 	Player* casterPlayer = caster ? caster->getPlayer() : nullptr;
+
+	Monster* monster = caster ? caster->getMonster() : nullptr;
+
+	if (monster) {
+		float bonusDmg = g_config.getFloat(ConfigManager::MLVL_BONUSDMG) * monster->getLevel();
+		if (bonusDmg != 0.0) {
+			damage.primary.value += std::round(damage.primary.value * bonusDmg);
+			damage.secondary.value += std::round(damage.secondary.value * bonusDmg);
+		}
+	}
 
 	bool success = false;
 	if (damage.primary.type != COMBAT_MANADRAIN) {

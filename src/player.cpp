@@ -655,6 +655,7 @@ void Player::addStorageValue(const uint32_t key, const int32_t value, const bool
 				value & 0xFF
 			);
 			return;
+		} else if (IS_IN_KEYRANGE(key, MOUNTS_RANGE)) {
 		} else {
 			std::cout << "Warning: unknown reserved key: " << key << " player: " << getName() << std::endl;
 			return;
@@ -1059,7 +1060,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 		}
 
 		// load mount speed bonus
-		/*uint16_t currentMountId = currentOutfit.lookMount;
+		uint16_t currentMountId = currentOutfit.lookMount;
 		if (currentMountId != 0) {
 			Mount* currentMount = g_game.mounts.getMountByClientID(currentMountId);
 			if (currentMount && hasMount(currentMount)) {
@@ -1072,8 +1073,7 @@ void Player::onCreatureAppear(Creature* creature, bool isLogin)
 
 		// mounted player moved to pz on login, update mount status
 		onChangeZone(getZone());
-		*/
-
+		
 		if (g_config.getBoolean(ConfigManager::PLAYER_CONSOLE_LOGS)) {
 			std::cout << name << " has logged in." << std::endl;
 		}
@@ -1119,9 +1119,20 @@ void Player::onChangeZone(ZoneType_t zone)
 			setAttackedCreature(nullptr);
 			onAttackedCreatureDisappear(false);
 		}
+		if (!group->access && isMounted()) {
+			dismount();
+			g_game.internalCreatureChangeOutfit(this, defaultOutfit);
+			wasMounted = true;
+		}
+	}
+	else {
+		if (wasMounted) {
+			toggleMount(true);
+			wasMounted = false;
+		}
 	}
 
-	g_game.updateCreatureWalkthrough(this);
+	//g_game.updateCreatureWalkthrough(this);
 	sendIcons();
 }
 
@@ -1630,7 +1641,7 @@ void Player::addExperience(Creature* source, uint64_t exp, bool sendText/* = fal
 		if (monster != nullptr) {
 			int monsterlevel = monster->getLevel();
 			if (monsterlevel > 0) {
-				exp += (exp * 0.08) * monsterlevel;
+				exp += (exp * 0.01) * monsterlevel;
 			}
 		}
 	}
@@ -3299,6 +3310,9 @@ void Player::updateItemsLight(bool internal /*=false*/)
 void Player::onAddCondition(ConditionType_t type)
 {
 	Creature::onAddCondition(type);
+	if (type == CONDITION_OUTFIT && isMounted()) {
+		dismount();
+	}
 	sendIcons();
 }
 
@@ -4085,7 +4099,7 @@ GuildEmblems_t Player::getGuildEmblem(const Player* player) const
 	return GUILDEMBLEM_NEUTRAL;
 }
 
-/*
+
 uint8_t Player::getCurrentMount() const
 {
 	int32_t value;
@@ -4246,7 +4260,9 @@ void Player::dismount()
 	defaultOutfit.lookMount = 0;
 }
 
-bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
+/*bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries)
+
+
 {
 	if (tries == 0 || skill == SKILL_LEVEL) {
 		return false;
