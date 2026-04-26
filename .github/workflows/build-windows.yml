@@ -1,0 +1,45 @@
+name: Build Windows x64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          ref: 8.60
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'a42af01b72c28a8e1d7b48107b33e4f286a55ef6'
+
+      - name: Install dependencies
+        run: |
+          vcpkg install boost-system:x64-windows boost-iostreams:x64-windows boost-filesystem:x64-windows boost-asio:x64-windows pugixml:x64-windows cryptopp:x64-windows luajit:x64-windows fmt:x64-windows mysql-connector-cpp:x64-windows
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -A x64
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Collect binary and DLLs
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release
+          Copy-Item build/Release/theforgottenserver.exe release/
+          Copy-Item $env:VCPKG_ROOT/installed/x64-windows/bin/*.dll release/ -ErrorAction SilentlyContinue
+          Copy-Item key.pem release/ -ErrorAction SilentlyContinue
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: theotserver-windows-x64
+          path: release/
+          retention-days: 30
