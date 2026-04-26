@@ -24,7 +24,17 @@ jobs:
         env:
           VCPKG_BINARY_SOURCES: clear
         run: |
-          C:\vcpkg\vcpkg.exe install boost-system:x64-windows boost-iostreams:x64-windows boost-filesystem:x64-windows boost-asio:x64-windows pugixml:x64-windows cryptopp:x64-windows luajit:x64-windows fmt:x64-windows mysql-connector-cpp:x64-windows --triplet x64-windows
+          C:\vcpkg\vcpkg.exe install `
+            boost-system:x64-windows `
+            boost-iostreams:x64-windows `
+            boost-filesystem:x64-windows `
+            boost-asio:x64-windows `
+            pugixml:x64-windows `
+            cryptopp:x64-windows `
+            luajit:x64-windows `
+            fmt:x64-windows `
+            mysql-connector-c:x64-windows `
+            --triplet x64-windows
 
       - name: Configure CMake
         shell: pwsh
@@ -34,7 +44,7 @@ jobs:
             -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" `
             -A x64 `
             -DMYSQL_INCLUDE_DIR="C:/vcpkg/installed/x64-windows/include/mysql" `
-            -DMYSQL_LIBRARY="C:/vcpkg/installed/x64-windows/lib/mysqlclient.lib"
+            -DMYSQL_LIBRARY="C:/vcpkg/installed/x64-windows/lib/libmysql.lib"
 
       - name: Build
         run: cmake --build build --config Release --parallel
