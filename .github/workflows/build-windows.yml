@@ -33,7 +33,7 @@ jobs:
             cryptopp:x64-windows `
             luajit:x64-windows `
             fmt:x64-windows `
-            mysql-connector-c:x64-windows `
+            libmariadb:x64-windows `
             --triplet x64-windows
 
       - name: Configure CMake
@@ -43,8 +43,8 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release `
             -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" `
             -A x64 `
-            -DMYSQL_INCLUDE_DIR="C:/vcpkg/installed/x64-windows/include/mysql" `
-            -DMYSQL_LIBRARY="C:/vcpkg/installed/x64-windows/lib/libmysql.lib"
+            -DMYSQL_INCLUDE_DIR="C:/vcpkg/installed/x64-windows/include/mariadb" `
+            -DMYSQL_LIBRARY="C:/vcpkg/installed/x64-windows/lib/libmariadb.lib"
 
       - name: Build
         run: cmake --build build --config Release --parallel
