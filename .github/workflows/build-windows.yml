@@ -36,6 +36,17 @@ jobs:
             libmariadb:x64-windows `
             --triplet x64-windows
 
+      - name: Create missing source stubs
+        shell: pwsh
+        run: |
+          $stubs = @("src/ioguild.cpp")
+          foreach ($f in $stubs) {
+            if (-not (Test-Path $f)) {
+              New-Item -ItemType File -Force -Path $f | Out-Null
+              Write-Host "Created stub: $f"
+            }
+          }
+
       - name: Configure CMake
         shell: pwsh
         run: |
