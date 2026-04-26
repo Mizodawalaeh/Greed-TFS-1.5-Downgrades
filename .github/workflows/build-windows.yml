@@ -29,7 +29,12 @@ jobs:
       - name: Configure CMake
         shell: pwsh
         run: |
-          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" -A x64
+          cmake -B build -S . `
+            -DCMAKE_BUILD_TYPE=Release `
+            -DCMAKE_TOOLCHAIN_FILE="C:/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            -A x64 `
+            -DMYSQL_INCLUDE_DIR="C:/vcpkg/installed/x64-windows/include/mysql" `
+            -DMYSQL_LIBRARY="C:/vcpkg/installed/x64-windows/lib/mysqlclient.lib"
 
       - name: Build
         run: cmake --build build --config Release --parallel
